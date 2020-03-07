@@ -1,7 +1,4 @@
-from flask_sqlalchemy import *
-from validation.getters import *
 from db.access_request import *
-from db.animal_db import *
 from settings import *
 from logger.logging import *
 
@@ -13,7 +10,7 @@ class Specie(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(10), nullable=False)
     description = db.Column(db.String(30), nullable=False)
-    price = db.Column(db.Integer, nullable=False)
+    price = db.Column(db.Float, nullable=False)
 
     @staticmethod
     def add_specie(request, _name, _description, _price):
