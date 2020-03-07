@@ -1,8 +1,7 @@
-from db.user_db import *
-from settings import *
 from flask_sqlalchemy import SQLAlchemy
-from validation.getters import *
+
 from logger.logging import *
+from settings import *
 
 db = SQLAlchemy(app)
 
@@ -15,7 +14,7 @@ class Animal(db.Model):
     description = db.Column(db.String(100))
     age = db.Column(db.Integer, nullable=False)
     species = db.Column(db.String(15), nullable=False)
-    price = db.Column(db.Integer)
+    price = db.Column(db.Float)
 
     def json(self):
         """Represent name of animals in json format
