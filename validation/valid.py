@@ -1,8 +1,7 @@
 import re
-from db.specie_db import *
-from db.animal_db import *
 from db.user_db import *
 from jwt import decode
+from db.specie_db import *
 from logger.warning_log import *
 
 
@@ -31,7 +30,6 @@ def valid_animals(animal_object):
             and valid_specie_for_animal(animal_object)):
         return True
     else:
-        warning_log("Register data of animal are invalid")
         return False
 
 
@@ -46,7 +44,8 @@ def valid_user(user_object):
             and 'Address' in user_object):
         return True
     else:
-        warning_log("Register data of center is invalid")
+        warning_log("Register data of center is invalid. Register form should be similar to this:"
+                    " {'Login': Login, 'Password': password, 'Address': address")
         return False
 
 
@@ -62,7 +61,6 @@ def valid_species(species_object):
             and specie_exists(species_object['Name'])):
         return True
     else:
-        warning_log("Register data of specie is invalid")
         return False
 
 
@@ -76,7 +74,7 @@ def price_validation(obj):
     if 'Price' in obj and regular_number.match(obj['Price']):
         return True
     else:
-        warning_log(f"The price passed incorrect")
+        warning_log(f"The price passed incorrect. Price should be positive number")
         return False
 
 
@@ -90,7 +88,7 @@ def age_validation(obj):
     if 'Age' in obj and regular_number.match(obj['Age']):
         return True
     else:
-        warning_log(f"The age passed incorrect")
+        warning_log(f"The age passed incorrect. Age should be positive number")
         return False
 
 
@@ -162,4 +160,51 @@ def valid_login_password(_login, _password):
     if user is not None:
         return True
     else:
+        return False
+
+
+def valid_user_login(user):
+    """Valid input form 'Login' and 'Password'
+
+    :param user: some user
+    :return: boolean
+    """
+    if ('Login' in user
+            and 'Password'in user):
+        return True
+    else:
+        warning_log("Register data of center is invalid. Login form should be similar to this:"
+                    " {'Login': login, 'Password': password}")
+        return False
+
+
+def valid_animal_form(animal):
+    """Valid input form 'Name', 'Age', 'Species'
+
+    :param animal: some animal
+    :return: boolean
+    """
+    if ('Name' in animal
+            and 'Age' in animal
+            and 'Species' in animal):
+        return True
+    else:
+        warning_log("Register data of animal are invalid. Input form should be similar to this: "
+                    "{'Name': name, 'Age': age, 'Species': specie}")
+        return False
+
+
+def valid_specie_form(specie):
+    """Valid input form 'Name', 'Description', 'Price'
+
+    :param specie: some specie
+    :return: boolean
+    """
+    if ('Name' in specie
+            and 'Description' in specie
+            and 'Price' in specie):
+        return True
+    else:
+        warning_log("Register data of specie are invalid. Input form should be similar to this: "
+                    "{'Name': name, 'Description': description, 'Price': price}")
         return False
