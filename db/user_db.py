@@ -1,7 +1,6 @@
-from flask_sqlalchemy import SQLAlchemy
-from settings import *
 from validation.getters import *
 from logger.logging import *
+from settings import *
 
 db = SQLAlchemy(app)
 
