@@ -2,12 +2,9 @@ import datetime
 import jwt
 from flask import request, Response
 
-from json import dumps
-from db.animal_db import *
-
 from validation.valid import *
 from validation.getters import *
-from error_variables.error_msg import *
+from logger.warning_log import error_response
 
 app.config['SECRET_KEY'] = 'secret key'
 
@@ -19,9 +16,13 @@ def get_token():
     :return: token or response
     """
     request_data = request.get_json()
+    if not valid_user_login(request_data):
+        return Response(error_response(), 400, mimetype='application/json')
+
     center_id = User.query.filter_by(login=request_data['Login']).first()
     login = str(request_data['Login'])
     password = str(request_data['Password'])
+
     condition = valid_login_password(login, password)
 
     if condition:
@@ -30,7 +31,7 @@ def get_token():
         token = jwt.encode({'exp': expiration_data}, app.config['SECRET_KEY'], algorithm='HS256')
         return token
     else:
-        return Response(invalid_sign_in_error_msg, 400, mimetype='application/json')
+        return Response(error_response(), 400, mimetype='application/json')
 
 
 @app.route('/register', methods=['POST'])
@@ -41,12 +42,12 @@ def register():
     """
     request_data = request.get_json()
     if center_exists(request_data['Login']):
-        return Response(exists_center_error_msg, status=401, mimetype='application/json')
+        return Response('Invalid token', status=401, mimetype='application/json')
     if valid_user(request_data):
         User.add_user(request, request_data['Login'], request_data['Password'], request_data['Address'])
         return Response("", status=201, mimetype='application/json')
     else:
-        return Response(dumps(invalid_user_error_msg), status=400, mimetype='application/json')
+        return Response(error_response(), status=400, mimetype='application/json')
 
 
 @app.route('/centers')
@@ -66,15 +67,15 @@ def register_animal():
     """
     token = request.args.get('token')
     if valid_token(token, app.config['SECRET_KEY']):
-        return Response(invalid_token_error_msg, status=401, mimetype='application/json')
+        return Response('Invalid token', status=401, mimetype='application/json')
     request_data = request.get_json()
-    if valid_animals(request_data):
+    if valid_animal_form(request_data) and valid_animals(request_data):
         Animal.add_animal(request, get_access().center_id, request_data['Name'], get_specie(request_data['Species']).description,
                           request_data['Age'],
                           request_data['Species'], get_specie(request_data['Species']).price)
         return Response("", status=201, mimetype='application/json')
     else:
-        return Response(dumps(invalid_animal_error_msg), status=400, mimetype='application/json')
+        return Response(error_response(), status=400, mimetype='application/json')
 
 
 @app.route('/animals')
@@ -114,13 +115,13 @@ def register_specie():
     """
     token = request.args.get('token')
     if valid_token(token, app.config['SECRET_KEY']):
-        return Response(invalid_token_error_msg, status=401, mimetype='application/json')
+        return Response('Invalid token', status=401, mimetype='application/json')
     request_data = request.get_json()
-    if valid_species(request_data):
+    if valid_specie_form(request_data) and valid_species(request_data):
         Specie.add_specie(request, request_data['Name'], request_data['Description'], request_data['Price'])
         return Response("", status=201, mimetype='application/json')
     else:
-        return Response(dumps(invalid_species_error_msg), status=400, mimetype='application/json')
+        return Response(error_response(), status=400, mimetype='application/json')
 
 
 @app.route('/species')
@@ -169,16 +170,16 @@ def delete_animal(id):
     """
     token = request.args.get('token')
     if valid_token(token, app.config['SECRET_KEY']):
-        return Response(invalid_token_error_msg, status=401, mimetype='application/json')
+        return Response('Invalid token', status=401, mimetype='application/json')
 
     if Animal.check_animal_before_delete(id):
-        return Response(dumps(invalid_id_error_msg), status=401, mimetype='application/json')
+        return Response(error_response(), status=401, mimetype='application/json')
     else:
         if check_center_before_delete(get_access().center_id, id):
             Animal.delete_animal(request, id)
             return Response('', status=200, mimetype='application/json')
         else:
-            return Response(exists_animal_in_center_error_msg, status=200, mimetype='application/json')
+            return Response(error_response(), status=200, mimetype='application/json')
 
 
 app.run(port=5001)
