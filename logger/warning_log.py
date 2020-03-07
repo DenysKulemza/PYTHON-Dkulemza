@@ -9,6 +9,17 @@ custom_logger.setFormatter(format_custom_logger)
 logger.addHandler(custom_logger)
 
 
+def error_response():
+    """Display error for user
+
+    :return: error message
+    """
+    error = ""
+    for error in open("warning.log"):
+        pass
+    return error
+
+
 def warning_log(message):
     """Warning logging
 
