@@ -1,6 +1,5 @@
 from db.specie_db import *
 from db.animal_db import *
-from db.access_request import *
 
 
 def get_specie(_name):
