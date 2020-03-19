@@ -1,7 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
-from settings import *
-from validation.getters import *
-from logger.logging import *
+from settings import app
+from logger.logging import loggers
 
 db = SQLAlchemy(app)
 
@@ -43,5 +42,3 @@ class User(db.Model):
         :return: centers
         """
         return [User.display_centers(user) for user in User.query.all()]
-
-

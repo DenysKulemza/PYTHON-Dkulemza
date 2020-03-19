@@ -1,8 +1,6 @@
-from db.user_db import *
-from settings import *
 from flask_sqlalchemy import SQLAlchemy
-from validation.getters import *
-from logger.logging import *
+from settings import app
+from logger.logging import loggers
 
 db = SQLAlchemy(app)
 
@@ -29,7 +27,8 @@ class Animal(db.Model):
 
         :return: information about current animal
         """
-        return {'Center id': self.center_id, 'Name': self.name, 'Description': self.description, 'Age': self.age,
+        return {'Center id': self.center_id, 'Name': self.name,
+                'Description': self.description, 'Age': self.age,
                 'Species': self.species, 'Price': self.price}
 
     @staticmethod
@@ -43,7 +42,8 @@ class Animal(db.Model):
         return Animal.current_animal(animal)
 
     @staticmethod
-    def add_animal(request, _center_id, _name, _description, _age, _species, _price):
+    def add_animal(request, _center_id, _name,
+                   _description, _age, _species, _price):
         """Adding animal to the database
 
         :param request: request of input form
@@ -67,7 +67,9 @@ class Animal(db.Model):
 
         :return: animals in some center
         """
-        return {'Animal name ': self.name, "Id ": self.center_id, "Specie ": self.species}
+        return {'Animal name ': self.name,
+                "Id ": self.center_id,
+                "Specie ": self.species}
 
     @staticmethod
     def get_centers_animals(_center_id):
@@ -76,7 +78,9 @@ class Animal(db.Model):
         :param _center_id: id of some center
         :return: animals in some center
         """
-        return [Animal.center_animals(animal) for animal in Animal.query.filter_by(center_id=_center_id).all()]
+        return [Animal.center_animals(animal)
+                for animal in
+                Animal.query.filter_by(center_id=_center_id).all()]
 
     @staticmethod
     def get_id(_name):

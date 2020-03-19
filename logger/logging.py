@@ -1,5 +1,4 @@
 import logging
-from validation.getters import *
 
 logger = logging.getLogger(__name__)
 custom_logger = logging.FileHandler('work.log')
@@ -18,4 +17,7 @@ def loggers(request, center_id, change, entity_id):
     :param change: what was changed
     :param entity_id: id of entity type
     """
-    logger.info('Method type {0}. Request url {1}. Center id {2}. Entity type {3}. Entity id {4}'.format(request.method, request.url, center_id, change, entity_id))
+    logger.info('Method type {0}. Request url {1}. '
+                'Center id {2}. Entity type {3}. Entity id {4}'.
+                format(request.method, request.url,
+                       center_id, change, entity_id))

@@ -1,9 +1,8 @@
-from flask_sqlalchemy import *
-from validation.getters import *
-from db.access_request import *
-from db.animal_db import *
-from settings import *
-from logger.logging import *
+from flask_sqlalchemy import SQLAlchemy
+from db.access_request import AccessToken
+from db.animal_db import Animal
+from settings import app
+from logger.logging import loggers
 
 db = SQLAlchemy(app)
 
@@ -29,7 +28,8 @@ class Specie(db.Model):
         db.session.add(new_specie)
         db.session.commit()
         access = AccessToken.query.order_by(AccessToken.id.desc()).first()
-        loggers(request, access.center_id, 'New specie was added', new_specie.id)
+        loggers(request, access.center_id,
+                'New specie was added', new_specie.id)
 
     def json(self, count):
         """Representation of specie and amount of all specie
@@ -45,7 +45,8 @@ class Specie(db.Model):
         :param animal_object: some animal
         :return: representation of specie
         """
-        return {'Animal name ': animal_object, 'Id ': self.id, 'Specie ': self.name}
+        return {'Animal name ': animal_object,
+                'Id ': self.id, 'Specie ': self.name}
 
     @staticmethod
     def get_specie_animals(_id):
@@ -64,4 +65,6 @@ class Specie(db.Model):
         :return: animal
         """
         specie = Specie.query.filter_by(id=_id).first()
-        return [Specie.specie_animals(specie, animal.name) for animal in Animal.query.filter_by(species=specie.name).all()]
+        return [Specie.specie_animals(specie, animal.name)
+                for animal in
+                Animal.query.filter_by(species=specie.name).all()]

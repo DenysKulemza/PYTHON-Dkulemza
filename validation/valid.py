@@ -1,9 +1,9 @@
 import re
-from db.specie_db import *
-from db.animal_db import *
-from db.user_db import *
+from db.specie_db import Specie
+from db.animal_db import Animal
+from db.user_db import User
 from jwt import decode
-from logger.warning_log import *
+from logger.warning_log import warning_log
 
 
 def valid_specie_for_animal(animal_object):
@@ -129,11 +129,13 @@ def check_center_before_delete(_center_id, _id):
         :param _id: id of some animal
         :return: boolean
         """
-    animal = Animal.query.filter_by(id=_id).filter_by(center_id=_center_id).first()
+    animal = Animal.query.\
+        filter_by(id=_id).filter_by(center_id=_center_id).first()
     if animal is not None:
         return True
     else:
-        warning_log(f"Center by this id: {_center_id} does not have animal by this id {_id}")
+        warning_log(f"Center by this id: {_center_id} "
+                    f"does not have animal by this id {_id}")
         return False
 
 
@@ -146,7 +148,7 @@ def valid_token(token, config):
     """
     try:
         decode(token, config)
-    except:
+    except Exception:
         warning_log("Invalid token")
         return True
 

@@ -1,6 +1,8 @@
-from settings import *
-from logger.warning_log import *
-from db.user_db import *
+from flask_sqlalchemy import SQLAlchemy
+from settings import app
+from logger.warning_log import warning_log
+
+from db.user_db import User
 
 db = SQLAlchemy(app)
 
