@@ -1,8 +1,9 @@
 import re
-from db.user_db import *
+from db.specie_db import Specie
+from db.animal_db import Animal
+from db.user_db import User
 from jwt import decode
-from db.specie_db import *
-from logger.warning_log import *
+from logger.warning_log import warning_log
 
 
 def valid_specie_for_animal(animal_object):
