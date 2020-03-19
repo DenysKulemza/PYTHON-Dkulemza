@@ -1,5 +1,6 @@
-from db.specie_db import *
-from db.animal_db import *
+from db.specie_db import Specie
+from db.animal_db import Animal
+from db.access_request import AccessToken
 
 
 def get_specie(_name):
